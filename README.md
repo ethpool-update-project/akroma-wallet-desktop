@@ -1,3 +1,7 @@
+# Akroma.io Desktop wallet.
+
+<!-- // TODO: need to change all the links to logo's and set up badges 
+
 [![Angular Logo](./logo-angular.jpg)](https://angular.io/) [![Electron Logo](./logo-electron.jpg)](https://electron.atom.io/)
 
 [![Travis Build Status][build-badge]][build]
@@ -7,11 +11,11 @@
 
 [![Watch on GitHub][github-watch-badge]][github-watch]
 [![Star on GitHub][github-star-badge]][github-star]
-[![Tweet][twitter-badge]][twitter]
+[![Tweet][twitter-badge]][twitter] -->
 
 # Introduction
 
-Bootstrap and package your project with Angular 5(+) and Electron (Typescript + SASS + Hot Reload) for creating Desktop applications.
+This is the Akroma Desktop wallet.
 
 Currently runs with:
 
@@ -28,10 +32,14 @@ With this sample, you can :
 
 ## Getting Started
 
+You need Node.js installed on your computer.
+
+install using [NVM](https://github.com/creationix/nvm) node package manager or download it from [nodejs.org](https://nodejs.org/en/)
+
 Clone this repository locally :
 
 ``` bash
-git clone https://github.com/maximegris/angular-electron.git
+git clone https://github.com/akroma-project/akroma-wallet-desktop.git
 ```
 
 Install dependencies with npm :
@@ -87,11 +95,25 @@ Note that you can't use Electron or NodeJS native libraries in this case. Please
 
 ## Contributors
 
-[<img alt="Maxime GRIS" src="https://avatars2.githubusercontent.com/u/10827551?v=3&s=117" width="117">](https://github.com/maximegris) |
-:---:
-|[Maxime GRIS](https://github.com/maximegris)|
 
-[build-badge]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master
+
+core team
+---
+
+[<img alt="Ian DesJardins" src="https://avatars3.githubusercontent.com/u/2693790?s=400&v=4" width="117">](https://github.com/iandesj)
+[<img alt="Eric Polerecky" src="https://avatars2.githubusercontent.com/u/49996?s=400&v=4" width="117">](https://github.com/detroitpro)
+[<img alt="Stephen Koller" src="https://avatars2.githubusercontent.com/u/1561673?s=460&v=4" width="117">](https://github.com/StephenKoller)
+
+---
+
+
+community
+---
+[<img alt="sj" src="https://avatars2.githubusercontent.com/u/13454303?s=460&v=4" width="117">](https://github.com/seanjnkns)
+[<img alt="kb" src="https://avatars2.githubusercontent.com/u/5076973?s=460&v=4" width="117">](https://github.com/astronautskaspars)
+
+
+<!-- [build-badge]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master
 [build]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master
 [dependencyci-badge]: https://dependencyci.com/github/maximegris/angular-electron/badge
 [dependencyci]: https://dependencyci.com/github/maximegris/angular-electron
@@ -104,4 +126,4 @@ Note that you can't use Electron or NodeJS native libraries in this case. Please
 [github-star-badge]: https://img.shields.io/github/stars/maximegris/angular-electron.svg?style=social
 [github-star]: https://github.com/maximegris/angular-electron/stargazers
 [twitter]: https://twitter.com/intent/tweet?text=Check%20out%20angular-electron!%20https://github.com/maximegris/angular-electron%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/maximegris/angular-electron.svg?style=social
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/maximegris/angular-electron.svg?style=social -->
