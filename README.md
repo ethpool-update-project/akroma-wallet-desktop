@@ -1,5 +1,5 @@
-<!-- <!-- // TODO: setup Travis CI  -->
 
+<!-- <!-- // TODO: setup Travis CI  -->
 [![Akroma Logo](./logo-akroma_b.png)](https://akroma.io/)
 [![Tweet][twitter-badge]][twitter]
 [![Tweet][twitter-follow-badge]][twitter-follow]
@@ -14,7 +14,6 @@
 [build]: https://github.com/akroma-project/akroma-wallet-desktop.svg?branch=master
 [build-badge]: https://github.com/akroma-project/akroma-wallet-desktop.svg?branch=master
 -->
-
 
 
 # Introduction
@@ -36,7 +35,7 @@ With this sample, you can :
 
 ## Getting Started
 
-You will need `Node.js` to be installed on your computer.
+
 
 install using [NVM](https://github.com/creationix/nvm) node package manager or download it from [nodejs.org](https://nodejs.org/en/)
 
@@ -115,6 +114,7 @@ community
 ---
 [<img alt="sj" src="https://avatars2.githubusercontent.com/u/13454303?s=460&v=4" width="117">](https://github.com/seanjnkns)
 [<img alt="kb" src="https://avatars2.githubusercontent.com/u/5076973?s=460&v=4" width="117">](https://github.com/astronautskaspars)
+
 
 
 

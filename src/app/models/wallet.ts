@@ -1,6 +1,6 @@
-export interface Wallet {
-    _id?: string;
-    _rev?: string;
+import { PouchEntity } from './pouch-entity';
+
+export interface Wallet extends PouchEntity {
     address?: string;
     name?: string;
     balance?: number;

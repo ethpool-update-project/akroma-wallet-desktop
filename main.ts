@@ -94,7 +94,6 @@ try {
   });
 
 } catch (e) {
-  process.kill(clientPid);
   // Catch Error
   // throw e;
 }

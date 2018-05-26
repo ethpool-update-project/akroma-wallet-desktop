@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
+import PouchDB from 'pouchdb';
 import { ProgressbarConfig } from 'ngx-bootstrap/progressbar';
 
 import { ISubscription } from 'rxjs/Subscription';
@@ -13,6 +14,7 @@ import 'rxjs/add/observable/of';
 import { Web3Service } from '../../providers/web3.service';
 import { AkromaClientService, statusConstants } from '../../providers/akroma-client.service';
 import { clientConstants } from '../../providers/akroma-client.constants';
+import { BlockSync } from '../../models/block-sync';
 
 // such override allows to keep some initial values
 export function getProgressbarConfig(): ProgressbarConfig {
@@ -28,13 +30,14 @@ export function getProgressbarConfig(): ProgressbarConfig {
 export class SplashComponent implements OnDestroy, OnInit {
   clientStatus: string;
   lastPercentageSynced: number;
-  isSyncing: boolean | any;
+  isSyncing: boolean | BlockSync;
   isListening: boolean;
   peerCount: number;
   clientStatusSubscription: ISubscription;
   isListeningSubscription: ISubscription;
   isSyncingSubscription: ISubscription;
   peerCountSubscription: ISubscription;
+  private blockSyncStore: PouchDB.Database<BlockSync>;
 
   constructor(private web3: Web3Service,
               private router: Router,
@@ -42,6 +45,7 @@ export class SplashComponent implements OnDestroy, OnInit {
     this.web3.setProvider(new this.web3.providers.HttpProvider(clientConstants.connection.default));
     this.lastPercentageSynced = 0;
     this.clientStatus = '';
+    this.blockSyncStore = new PouchDB('lastBlockSynced');
   }
 
   ngOnInit() {
@@ -60,7 +64,21 @@ export class SplashComponent implements OnDestroy, OnInit {
     });
   }
 
-  private startSyncingSubscriptions(): void {
+  private async startSyncingSubscriptions(): Promise<void> {
+    let lastSynced: BlockSync;
+    try {
+      lastSynced = await this.blockSyncStore.get('lastSynced');
+    } catch {
+      await this.blockSyncStore.put({
+        _id: 'lastSynced',
+        currentBlock: 0,
+        highestBlock: 0,
+        knownStates: 0,
+        pulledStates: 0,
+        startingBlock: 0,
+      });
+      lastSynced = await this.blockSyncStore.get('lastSynced');
+    }
     this.isListeningSubscription = IntervalObservable.create(2000)
     .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.net.isListening())))
     .pipe(retry(10))
@@ -72,18 +90,30 @@ export class SplashComponent implements OnDestroy, OnInit {
     this.isSyncingSubscription = IntervalObservable.create(1000)
     .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.isSyncing())))
     .pipe(retry(10))
-    .subscribe((result: boolean | any) => {
+    .subscribe(async (result: boolean | BlockSync) => {
       console.log('is syncing:' + JSON.stringify(result));
       if (this.isListening) {
         this.isSyncing = result;
         if (!!result) {
-          console.log('currentBlock:' + result.currentBlock + ' highestBlock:' + result.highestBlock);
-          this.lastPercentageSynced = this.currentPercentage(result.currentBlock, result.highestBlock);
+          lastSynced = {
+            ...lastSynced,
+            ...<BlockSync> result,
+          };
+          console.log('currentBlock:' + lastSynced.currentBlock + ' highestBlock:' + lastSynced.highestBlock);
+        }
+        if (!!lastSynced) {
+          await this.blockSyncStore.put({
+            ...lastSynced,
+          });
+          lastSynced = await this.blockSyncStore.get('lastSynced');
+
+          console.log('currentBlock:' + lastSynced.currentBlock + ' highestBlock:' + lastSynced.highestBlock);
+          this.lastPercentageSynced = this.currentPercentage(lastSynced.currentBlock, lastSynced.highestBlock);
         }
         console.log(result);
         console.log(this.lastPercentageSynced);
         console.log((this.lastPercentageSynced || 0).toFixed(0));
-        if (result === false && (this.lastPercentageSynced || 0).toFixed(0) === '100') {
+        if (result === false && this.lastPercentageSynced >= 98) {
           // Nav away here
           console.log('nav away...');
           // If user has not set up a wallet yet, send them to create / import wallet
@@ -103,8 +133,8 @@ export class SplashComponent implements OnDestroy, OnInit {
     });
   }
 
-  currentPercentage(currentBlock: string, highestBlock: string): number {
-    return (parseInt(currentBlock, 10) / parseInt(highestBlock, 10)) * 100;
+  currentPercentage(currentBlock: number, highestBlock: number): number {
+    return currentBlock / highestBlock * 100;
   }
 
   hexToInt(hexValue: string): number {

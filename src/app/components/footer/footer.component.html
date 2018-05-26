@@ -3,13 +3,13 @@
     <div class="col">
       <ul class="list-inline">
         <li class="list-inline-item">
-          Connected: True
+          Connected: {{ (listening$ | async) || false }}
         </li>
         <li class="list-inline-item">
-          Peers: 0
+          Peers: {{ (peerCount$ | async) || 0 }}
         </li>
         <li class="list-inline-item">
-          Block height: 21343
+          Block height: {{ (blockNumber$ | async) || 0 }}
         </li>
       </ul>
     </div>
