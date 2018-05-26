@@ -1,17 +1,21 @@
-# Akroma.io Desktop wallet.
+<!-- <!-- // TODO: setup Travis CI  -->
 
-<!-- // TODO: need to change all the links to logo's and set up badges 
-
-[![Angular Logo](./logo-angular.jpg)](https://angular.io/) [![Electron Logo](./logo-electron.jpg)](https://electron.atom.io/)
-
-[![Travis Build Status][build-badge]][build]
-[![Dependencies Status][dependencyci-badge]][dependencyci]
-[![Make a pull request][prs-badge]][prs]
-[![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
-
-[![Watch on GitHub][github-watch-badge]][github-watch]
+[![Akroma Logo](./logo-akroma_b.png)](https://akroma.io/)
+[![Tweet][twitter-badge]][twitter]
+[![Tweet][twitter-follow-badge]][twitter-follow]
+[![Chat with us on discord][discord-badge]][discord]
 [![Star on GitHub][github-star-badge]][github-star]
-[![Tweet][twitter-badge]][twitter] -->
+[![Watch on GitHub][github-watch-badge]][github-watch]
+[![Make a pull request][prs-badge]][prs]
+<!-- [![Travis Build Status][build-badge]][build] -->
+[GNU General Public License v3.0](LICENSE)  
+
+<!-- 
+[build]: https://github.com/akroma-project/akroma-wallet-desktop.svg?branch=master
+[build-badge]: https://github.com/akroma-project/akroma-wallet-desktop.svg?branch=master
+-->
+
+
 
 # Introduction
 
@@ -19,10 +23,10 @@ This is the Akroma Desktop wallet.
 
 Currently runs with:
 
-- Angular v5.2.5
-- Angular-CLI v1.6.4
-- Electron v1.8.2
-- Electron Builder v20.0.4
+- Angular v5.2.9
+- Angular-CLI v1.7.4
+- Electron v1.8.4
+- Electron Builder v20.8.1
 
 With this sample, you can :
 
@@ -32,7 +36,7 @@ With this sample, you can :
 
 ## Getting Started
 
-You need Node.js installed on your computer.
+You will need `Node.js` to be installed on your computer.
 
 install using [NVM](https://github.com/creationix/nvm) node package manager or download it from [nodejs.org](https://nodejs.org/en/)
 
@@ -113,17 +117,42 @@ community
 [<img alt="kb" src="https://avatars2.githubusercontent.com/u/5076973?s=460&v=4" width="117">](https://github.com/astronautskaspars)
 
 
-<!-- [build-badge]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master
-[build]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master
-[dependencyci-badge]: https://dependencyci.com/github/maximegris/angular-electron/badge
-[dependencyci]: https://dependencyci.com/github/maximegris/angular-electron
-[license-badge]: https://img.shields.io/badge/license-Apache2-blue.svg?style=flat
-[license]: https://github.com/maximegris/angular-electron/blob/master/LICENSE.md
-[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[discord]: https://discord.gg/QRmKYvs
+[discord-badge]: https://img.shields.io/discord/102860784329052160.svg
+
+[twitter-follow]: https://twitter.com/intent/follow?screen_name=akroma_io
+[twitter-follow-badge]: https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow
+
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20Akroma%20Desktop%20wallet!%20https://github.com/akroma-project/akroma-wallet-desktop%20%F0%9F%91%8D
+[twitter-badge]: https://img.shields.io/twitter/url/http/shields.io.svg?style=social
+
+[github-star]: https://github.com/akroma-project/akroma-wallet-desktop/stargazers 
+[github-star-badge]: https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Stars
+
+[github-watch]: https://github.com/akroma-project/akroma-wallet-desktop/watchers
+[github-watch-badge]: https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch
+
 [prs]: http://makeapullrequest.com
-[github-watch-badge]: https://img.shields.io/github/watchers/maximegris/angular-electron.svg?style=social
-[github-watch]: https://github.com/maximegris/angular-electron/watchers
-[github-star-badge]: https://img.shields.io/github/stars/maximegris/angular-electron.svg?style=social
-[github-star]: https://github.com/maximegris/angular-electron/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20angular-electron!%20https://github.com/maximegris/angular-electron%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/maximegris/angular-electron.svg?style=social -->
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+
+[license]: https://github.com/akroma-project/akroma-wallet-desktop/blob/master/LICENSE
+[license-badge]: https://img.shields.io/badge/license-Apache2-blue.svg?style=flat
+
