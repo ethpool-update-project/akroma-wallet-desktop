@@ -57,7 +57,9 @@ function createWindow() {
   // Listen on event, sent when angular is officially listening
   // see splash-page.component.ts
   ipcMain.on('client:start', (event, arg) => {
-    clientPid = arg;
+    if (!clientPid) {
+      clientPid = arg;
+    }
   });
 }
 
@@ -77,11 +79,12 @@ try {
     if (process.platform !== 'darwin') {
       app.quit();
     }
+    process.kill(clientPid);
   });
 
-  // Emitted before the application starts closing its windows.
+  // Emitted when all windows have been closed and the application will quit.
   // Calling event.preventDefault() will prevent the default behaviour, which is terminating the application.
-  app.on('before-quit', () => {
+  app.on('will-quit', () => {
     process.kill(clientPid);
   });
 

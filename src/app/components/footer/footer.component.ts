@@ -30,7 +30,7 @@ export class FooterComponent implements OnInit {
     try {
       this.settings = await this.settingsService.db.get('system');
     } catch {
-      this.settings = await this.clientService.defaultSettings();
+      this.settings = await this.settingsService.defaultSettings();
     }
     setInterval(() => {
       this.blockNumber$ = Observable.fromPromise(this.web3.eth.getBlockNumber());
@@ -40,7 +40,6 @@ export class FooterComponent implements OnInit {
   }
 
   viewLogs() {
-    console.log('test');
     this.electronService.remote.shell.showItemInFolder(this.settings.applicationPath + this.electronService.path.sep + 'akroma.txt');
   }
 }

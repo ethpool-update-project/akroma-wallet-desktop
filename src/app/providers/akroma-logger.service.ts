@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SystemSettings } from '../models/system-settings';
 import { ElectronService } from './electron.service';
 import { SettingsPersistenceService } from './settings-persistence.service';
+import { AkromaClientService } from './akroma-client.service';
 
 @Injectable()
 export class AkromaLoggerService {
@@ -15,25 +16,28 @@ export class AkromaLoggerService {
         private settingsService: SettingsPersistenceService,
     ) { }
 
-    init(callback: Function) {
+    async init(callback: Function) {
         console.log('settings service!');
-        this.settingsService.db.get('system')
-            .then(x => {
-                this.logPath = x.applicationPath + this.electronService.path.sep + 'akroma.txt';
-                console.log(`AkromaLoggerService: [logPath]: ${this.logPath}`);
+        let settings;
+        try {
+            settings = await this.settingsService.db.get('system');
+        } catch {
+            settings = await this.settingsService.defaultSettings();
+        }
+        this.logPath = settings.applicationPath + this.electronService.path.sep + 'akroma.txt';
+        console.log(`AkromaLoggerService: [logPath]: ${this.logPath}`);
 
-                const exists = this.electronService.fs.existsSync(this.logPath);
-                if (!exists) {
-                    console.log(`AkromaLoggerService: log file does not exist`);
-                    // tslint:disable-next-line:max-line-length
-                    this.electronService.fs.appendFile(this.logPath, this.format('Created log file', new Date(), 'debug'), () => this.noop);
-                }
-                try {
-                    this.electronService.fs.accessSync(this.logPath);
-                } catch (err) {
-                    console.log(`AkromaLoggerService: Unable to access file: ${this.logPath}`);
-                }
-            });
+        const exists = this.electronService.fs.existsSync(this.logPath);
+        if (!exists) {
+            console.log(`AkromaLoggerService: log file does not exist`);
+            // tslint:disable-next-line:max-line-length
+            this.electronService.fs.appendFile(this.logPath, this.format('Created log file', new Date(), 'debug'), () => this.noop);
+        }
+        try {
+            this.electronService.fs.accessSync(this.logPath);
+        } catch (err) {
+            console.log(`AkromaLoggerService: Unable to access file: ${this.logPath}`);
+        }
         callback();
     }
 

@@ -67,9 +67,12 @@ export class SplashComponent implements OnDestroy, OnInit {
   private async startSyncingSubscriptions(): Promise<void> {
     let lastSynced: BlockSync;
     try {
+      console.log('Start Syncing - Get lastSynced');
       lastSynced = await this.blockSyncStore.get('lastSynced');
     } catch {
-      await this.blockSyncStore.put({
+      console.log('Start Syncing - FAIL Get lastSynced');
+      console.log('Start Syncing - Put lastSynced');
+      const results = await this.blockSyncStore.put({
         _id: 'lastSynced',
         currentBlock: 0,
         highestBlock: 0,
@@ -77,7 +80,10 @@ export class SplashComponent implements OnDestroy, OnInit {
         pulledStates: 0,
         startingBlock: 0,
       });
-      lastSynced = await this.blockSyncStore.get('lastSynced');
+      if (results.ok) {
+        console.log('Start Syncing - Get lastSynced');
+        lastSynced = await this.blockSyncStore.get('lastSynced');
+      }
     }
     this.isListeningSubscription = IntervalObservable.create(2000)
     .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.net.isListening())))
