@@ -45,10 +45,13 @@ export class AkromaClientService {
     try {
       this.client = clientConstants.clients.akroma.platforms[this.es.os.platform()][this.es.os.arch()];
       settings = await this.settingsService.db.get('system');
-      await this.settingsService.db.remove(settings);
-      settings = await this.defaultSettings();
+      this.logger.debug('loading default settings in Akroma Client Service');
+      settings = await this.settingsService.defaultSettings();
+      this.logger.info('[saved settings]: ' + JSON.stringify(settings));
     } catch {
-      settings = await this.defaultSettings();
+      this.logger.debug('loading default settings in Akroma Client Service');
+      settings = await this.settingsService.defaultSettings();
+      this.logger.info('[saved settings]: ' + JSON.stringify(settings));
     }
 
     this.logger.info('[settings]: ' + JSON.stringify(settings));
@@ -58,22 +61,6 @@ export class AkromaClientService {
     this.clientBin = this.client.bin;
     this.syncMode = settings.syncMode;
     callback();
-  }
-
-  async defaultSettings(): Promise<any> {
-    this.logger.debug('loading default settings');
-    const saveMe = {
-      _id: 'system',
-      clientPath: this.es.path.join(this.es.os.homedir + this.client.extract_path),
-      applicationPath: this.es.remote.app.getPath('userData'),
-      syncMode: 'fast',
-    };
-
-    const result = await this.settingsService.db.put(saveMe);
-    if (result.ok) {
-      this.logger.info('[saved settings]: ' + JSON.stringify(saveMe));
-      return saveMe;
-    }
   }
 
   downloadClient(callback?: Function): void {
@@ -120,7 +107,6 @@ export class AkromaClientService {
     } catch {
       // tslint:disable-next-line:no-console
       this.logger.debug('[Starting Akroma client...]');
-      const settings = await this.settingsService.db.get('system');
       const program = this.clientPath + this.es.path.sep + this.clientBin;
       const dataDir = this.clientPath + this.es.path.sep + 'data';
 
