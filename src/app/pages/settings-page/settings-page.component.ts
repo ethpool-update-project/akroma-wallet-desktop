@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SystemSettings } from '../../models/system-settings';
@@ -15,6 +15,14 @@ export class SettingsPageComponent implements OnInit {
   private directoryInput: ElementRef;
   systemSettingsForm: FormGroup;
   storedSettings: SystemSettings;
+
+  public Esc_Key: string;
+  @HostListener('document:keydown.escape', ['$event'])
+  escapeFromSettingsPage(event: KeyboardEvent) {
+    this.Esc_Key = event.key;
+    console.log(event.key, 'key pressed navigating to wallets page');
+    this.router.navigate(['/wallets']);
+  }
 
   constructor(
     private settingsService: SettingsPersistenceService,
