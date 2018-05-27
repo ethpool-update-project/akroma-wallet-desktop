@@ -19,7 +19,7 @@
   "scripts": {
     "postinstall": "node patch.js && npx electron-builder install-app-deps",
     "ng": "ng",
-    "start": "npm run build:prod && npx electron-builder build --linux",
+    "start": "npm run build:dev && npx electron-builder build --linux",
     "build": "npm run electron:tsc && ng build",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",

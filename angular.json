@@ -31,6 +31,23 @@
           },
           "configurations": {
             "dev": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": false,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "fileReplacements": [
+                {
+                  "replace": "./src/environments/environment.dev.ts",
+                  "with": "./src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "production": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -42,11 +59,13 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.dev.ts",
-                  "with": "./src/environments/environment.dev.ts"
+                  "replace": "./src/environments/environment.prod.ts",
+                  "with": "./src/environments/environment.prod.ts"
                 }
               ]
             }
+
+
           }
         },
         "serve": {
