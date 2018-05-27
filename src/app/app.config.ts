@@ -2,7 +2,7 @@ import { CONF_LOCAL } from '../environments/environment.local';
 import { CONF_DEV } from '../environments/environment.dev';
 import { CONF_PROD } from '../environments/environment.prod';
 
-const ENV = 'prod';
+const ENV = 'local';
 
 const LOCAL: String = 'local';
 const DEV: String = 'dev';
@@ -20,4 +20,4 @@ if (ENV === PROD) {
   conf = CONF_LOCAL;
 }
 
-export const AppConfig = Object.assign({}, conf);
+export const AppConfig = (<any>Object).assign({}, conf);
