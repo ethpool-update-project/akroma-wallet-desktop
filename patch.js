@@ -12,4 +12,6 @@ var result = data.replace(/node: false/g, 'node: {crypto: true, stream: true, fs
   fs.writeFile(f, result, 'utf8', function (err) {
     if (err) return console.log(err);
   });
+
 });
+
