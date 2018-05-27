@@ -17,11 +17,12 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "postinstall": "npx electron-builder install-app-deps",
+    "postinstall": "node patch.js && npx electron-builder install-app-deps",
     "ng": "ng",
-    "start": "node hooks/environments/set_profile.js && npm-run-all -p ng:serve electron:serve",
-    "build": "node hooks/environments/set_profile.js && ng build && npm run electron:tsc",
-    "build:prod": "node hooks/environments/set_profile.js && ng build --prod && npm run electron:tsc",
+    "start": "npm run build:prod && npx electron-builder build --linux",
+    "build": "npm run electron:tsc && ng build",
+    "build:dev": "npm run build -- -c dev",
+    "build:prod": "npm run build -- -c production",
     "ng:serve": "ng serve -o",
     "electron:tsc": "tsc main.ts",
     "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
@@ -29,10 +30,8 @@
     "electron:linux": "npm run build:prod && npx electron-builder build --linux",
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
-    "test": "karma start ./karma.conf.js",
-    "pree2e:build": "webdriver-manager update --gecko false && npm run ng serve",
-    "pree2e:protractor": "wait-on http-get://localhost:4200/ && protractor ./protractor.conf.js",
-    "e2e": "npm-run-all -p -r pree2e:build pree2e:protractor"
+    "test": "ng test",
+    "e2e": "ng e2e"
   },
   "dependencies": {
     "bignumber.js": "^7.0.1",
