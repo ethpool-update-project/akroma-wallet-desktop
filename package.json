@@ -52,9 +52,7 @@
     "websql": "^0.4.4"
   },
   "devDependencies": {
-
     "@angular-devkit/build-angular": "~0.6.5",
-
     "@angular/cli": "6.0.3",
     "@angular/common": "6.0.3",
     "@angular/compiler": "6.0.3",
