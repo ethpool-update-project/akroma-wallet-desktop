@@ -1,6 +1,22 @@
 ### Changelog
 All notable changes to this project will be documented in this file.
 
+#### [4.0.0](https://github.com/maximegris/angular-electron/compare/3.4.1...4.0.0)
+- Update to NodeJS 8, Angular 6, electron 2.0.2, RxJS 6.1  [`#182`](https://github.com/maximegris/angular-electron/pull/182)
+- ref/ upgrade angular to 6.0.3 [`e7fac6e`](https://github.com/maximegris/angular-electron/commit/e7fac6ed1f415ef9c20439c9f0eac2bed0dc7766)
+- misc/ remove unused packages [`a7e33b6`](https://github.com/maximegris/angular-electron/commit/a7e33b646f3c01e0c3f342c39775f884e8391ac7)
+
+#### [3.4.1](https://github.com/maximegris/angular-electron/compare/3.4.0...3.4.1)
+- Modify electron builder configuration to remove source code and tests [`#190`](https://github.com/maximegris/angular-electron/pull/190)
+- version 3.4.1 [`308ea9c`](https://github.com/maximegris/angular-electron/commit/308ea9c014781aa65c712ea69a844e77c8e651ef)
+
+#### [3.4.0](https://github.com/maximegris/angular-electron/compare/3.3.0...3.4.0)
+- Resolved Translation issue [`#186`](https://github.com/maximegris/angular-electron/pull/186)
+- Removed unused file [`#185`](https://github.com/maximegris/angular-electron/pull/185)
+- ref/ remove contributors [`6dc97a1`](https://github.com/maximegris/angular-electron/commit/6dc97a1ea857b48a7a111768f58498c91a3572b5)
+- Translation issue [`35354b1`](https://github.com/maximegris/angular-electron/commit/35354b1025d98fd14d0566d3aa3112bb9c36fc91)
+- version 3.4.0 [`06d6b0f`](https://github.com/maximegris/angular-electron/commit/06d6b0f8c5de703a9c7f5dcfc880a9673aa6eec8)
+
 #### [3.3.0](https://github.com/maximegris/angular-electron/compare/3.2.0...3.3.0)
 - add Changelog file [`71083f1`](https://github.com/maximegris/angular-electron/commit/71083f12bf1e20225769af20a8a054ab8af4a6f9)
 - version 3.3.0 [`a88bda6`](https://github.com/maximegris/angular-electron/commit/a88bda66d83690b1064bcb11a0cb1bb893894caf)
