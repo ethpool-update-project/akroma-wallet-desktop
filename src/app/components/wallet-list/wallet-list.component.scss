@@ -20,6 +20,12 @@
 
     color: #FFFFFF;
     text-shadow: 0px 5px 7px rgba(0, 0, 0, 0.15), 0px 1px 1px rgba(0, 0, 0, 0.15);
+
+    > img {
+        max-height: 100%;
+        padding-left: 40px;
+        opacity: 0.5;
+    }
 }
 
 .wallet-actions {
@@ -27,12 +33,12 @@
     float: right;
     justify-content: space-between;
     padding-bottom: 20px;
-    width: 70%;
+    width: 90%;
 
     a.action {
         display: flex;
         flex-direction: column;
-        font-size: 18px;
+        font-size: 24px;
         font-weight: 200;
         letter-spacing: 1px;
         color: #fff;
@@ -50,6 +56,7 @@
 }
 
 .new-wallet {
+    cursor: pointer;
     display: flex;
     font-family: Work Sans;
     font-style: normal;

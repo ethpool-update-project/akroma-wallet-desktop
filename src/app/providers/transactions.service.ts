@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { Transaction } from 'web3/types';
-
 import { Web3Service } from './web3.service';
+import { Transaction } from '../models/transaction';
 
 @Injectable()
 export class TransactionsService extends Web3Service {
+
+  async getSingleTransactionByHash(txHash: string): Promise<Transaction> {
+    return this.eth.getTransactionReceipt(txHash);
+  }
 
   async getTransactionsByAccount(myAccount: string, startBlockNumber: number, endBlockNumber: number): Promise<Transaction[]> {
     const accountTransactions: Transaction[] = [];
@@ -19,17 +22,17 @@ export class TransactionsService extends Web3Service {
     for (let i = startBlockNumber; i <= endBlockNumber; i++) {
       const block = await this.eth.getBlock(i, true);
       if (block != null && block.transactions != null) {
-        block.transactions.forEach((e: Transaction) => {
-          if (myAccount === '*' || myAccount === e.from || myAccount === e.to) {
-          accountTransactions.push(e);
+        block.transactions.forEach((transaction: Transaction) => {
+          if (myAccount === '*' || myAccount === transaction.from || myAccount === transaction.to) {
+            accountTransactions.push({
+              ...transaction,
+              timestamp: 1000 * block.timestamp,
+              _id: transaction.hash,
+            });
           }
         });
       }
     }
     return accountTransactions;
-  }
-
-  private sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

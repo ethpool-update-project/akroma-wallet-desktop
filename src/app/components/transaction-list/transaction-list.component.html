@@ -5,25 +5,37 @@
     <a class="filter-type" [ngClass]="{'selected': filter === 'received'}" (click)="setFilter('received')">Received</a>
   </div>
 
-  <div *ngFor="let transaction of transactions | filter:filter | paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
-    class="transactions">
-    <div class="transaction">
-      <div class="value">
-        {{ transaction.value }}
-        <span class="unit-badge">AKA</span>
+  <ng-container *ngIf="transactions?.length; else loading">
+    <div *ngFor="let transaction of filteredTransactions | paginate: { itemsPerPage: 5, currentPage: p }; let i = index" class="transactions">
+      <div class="transaction">
+        <div class="value">
+          {{ transaction.value | showEther }}
+          <span class="unit-badge">AKA</span>
+          <div *ngIf="transaction.blockHash === ''">Pending</div>
+        </div>
+        <div class="timestamp">
+          {{ transaction.timestamp | date:'long' }}
+        </div>
       </div>
-      <div class="timestamp">
-        {{ this.timestamp }}
+      <div *ngIf="transaction.from.toUpperCase() === wallet.address.toUpperCase(); else fromAddress" class="address">
+        <div class="to">To</div>
+        <div class="toAddress">{{ transaction.to }}</div>
       </div>
+      <ng-template #fromAddress>
+        <div class="address">
+          <div class="from">From</div>
+          <div class="fromAddress">{{ transaction.from }}</div>
+        </div>
+      </ng-template>
     </div>
-    <div *ngIf="false" class="address">
-      <div class="to">To</div>
-      <div class="toAddress">{{ transaction.to }}</div>
-    </div>
-    <div *ngIf="true" class="address">
-      <div class="from">From</div>
-      <div class="fromAddress">{{ transaction.from }}</div>
-    </div>
-  </div>
-  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </ng-container>
 </div>
+
+<!-- loading animation -->
+<ng-template #loading>
+  <div id="loading">
+    <img id="loading-img" src="./assets/images/akroma-loading.png" alt="loading">
+    <p>Transaction Sync in Progress...</p>
+  </div>
+</ng-template>

@@ -13,6 +13,7 @@ import { ElectronService } from '../../providers/electron.service';
 import { SettingsPersistenceService } from '../../providers/settings-persistence.service';
 import { WalletPersistenceService } from '../../providers/wallet-persistence.service';
 import { Web3Service } from '../../providers/web3.service';
+import { AkromaLoggerService } from '../../providers/akroma-logger.service';
 
 const electron = window.require('electron');
 
@@ -24,6 +25,7 @@ const electron = window.require('electron');
 export class WalletListComponent implements OnInit {
   modalRef: BsModalRef;
   allWalletsBalance: number;
+  allWalletsBalanceLoading: boolean;
   walletForm: FormGroup;
   wallets: Wallet[];
 
@@ -32,27 +34,28 @@ export class WalletListComponent implements OnInit {
               private web3: Web3Service,
               private walletService: WalletPersistenceService,
               private settingsService: SettingsPersistenceService,
-              private electronService: ElectronService) {
+              private electronService: ElectronService,
+              private logger: AkromaLoggerService) {
     this.web3.setProvider(new this.web3.providers.HttpProvider(clientConstants.connection.default));
-    this.wallets = [];
     this.walletForm = this.formBuilder.group(
       { name: '', passphrase: '', confirmPassphrase: '' },
       { validator: this.passphraseMatchValidator },
     );
+    this.allWalletsBalance = 0;
+    this.allWalletsBalanceLoading = true;
   }
 
   async ngOnInit() {
-
+    const allDocs = await this.walletService.db.allDocs({ include_docs: true });
+    this.wallets = allDocs.rows.map(x => x.doc);
     const subscription = IntervalObservable.create(5000)
     .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.personal.getAccounts())))
     .pipe(retry(10))
     .pipe(distinctUntilChanged())
     .subscribe(async (wallets: string[]) => {
-      const allPersistedWallets = await this.walletService.db.allDocs({ include_docs: true });
       wallets.forEach(wallet => {
-        const storedWallet = allPersistedWallets.rows.find(x => x.doc.address === wallet);
+        const storedWallet = allDocs.rows.find(x => x.doc.address === wallet);
         if (!!storedWallet) {
-          this.wallets.push(storedWallet.doc);
           return;
         }
 
@@ -62,7 +65,7 @@ export class WalletListComponent implements OnInit {
           _id: wallet,
         });
       });
-      this.allWalletsBalance = await this.getWalletBalances(this.wallets.map(x => x.address));
+      await this.getWalletBalances(this.wallets.map(x => x.address));
       subscription.unsubscribe();
     });
   }
@@ -96,25 +99,40 @@ export class WalletListComponent implements OnInit {
     const keystoreFile = keystoreFileList.find(x => x.toLowerCase().includes(wallet.address.replace('0x', '').toLowerCase()));
     if (keystoreFile) {
       await this.electronService.fs.unlinkSync(`${keystoreFileDir}/${keystoreFile}`);
-      const result = await this.walletService.db.remove(wallet._id, wallet._rev);
-      if (result.ok) {
+      try {
+        const result = await this.walletService.db.remove(wallet._id, wallet._rev);
+        if (result.ok) {
+          this.wallets = this.wallets.filter(x => x._id !== wallet._id);
+        }
+      } catch {
         this.wallets = this.wallets.filter(x => x._id !== wallet._id);
+        this.logger.debug(`Wallet ${wallet.address} not removed from database ` +
+          `because it did not exist, but keystore file has been deleted.`);
       }
       this.modalRef.hide();
     }
   }
 
   async getWalletBalances(addresses: string[]) {
-    let totalBalance = 0;
-    addresses.forEach(async x => {
-      totalBalance += this.web3.utils.fromWei(await this.web3.eth.getBalance(x));
-    });
-    return totalBalance;
+    if (addresses.length === 0) {
+      this.allWalletsBalanceLoading = false;
+      return;
+    }
+
+    for (let i = 0; i < addresses.length; i++) {
+      const balance = await this.web3.eth.getBalance(addresses[i]);
+      this.allWalletsBalance += parseInt(balance, 10);
+      this.allWalletsBalanceLoading = false;
+    }
   }
 
   backupWalletReminder(wallet: Wallet, template: TemplateRef<any>) {
     this.openModal(template);
     this.modalRef.content = { wallet };
+  }
+
+  copyAddress(wallet: Wallet) {
+    electron.clipboard.writeText(wallet.address);
   }
 
   async backupWallet(wallet: Wallet) {

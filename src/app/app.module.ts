@@ -36,6 +36,7 @@ import { TransactionsService } from './providers/transactions.service';
 import { WalletPersistenceService } from './providers/wallet-persistence.service';
 import { Web3Service } from './providers/web3.service';
 import { AkromaLoggerService } from './providers/akroma-logger.service';
+import { ShowEtherPipe } from './pipes/show-ether.pipe';
 
 
 // AoT requires an exported function for factories
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WalletListComponent,
     MastheadComponent,
     FooterComponent,
+    ShowEtherPipe,
   ],
   imports: [
     RouterModule,

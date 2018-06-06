@@ -56,6 +56,7 @@
 
 .toAddress, .fromAddress {
     font-weight: 400;
+    width: 100%;
 }
 
 .to, .from {
@@ -76,7 +77,23 @@
         filter: hue-rotate(360deg);
     }
 }
-  
+
 .loading-logo {
     animation: change-hue 2s linear infinite;
+}
+
+#loading {
+    color: #fff;
+    font-weight: 400;
+    font-size: 20px;
+    text-align: center;
+    display: block;
+}
+
+#loading-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+    width: 240px;
 }

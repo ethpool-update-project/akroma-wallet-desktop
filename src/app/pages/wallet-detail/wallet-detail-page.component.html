@@ -3,10 +3,11 @@
   <div class="row">
     <div class="col-sm">
       <app-wallet [wallet]="wallet"></app-wallet>
-      <app-send-transaction></app-send-transaction>
+      <app-wallet-actions (send)="sendTransaction.openModal(sendTransaction.passphraseModal)"></app-wallet-actions>
+      <app-send-transaction #sendTransaction [wallet]="wallet" (transactionSent)="onTransactionSent($event)"></app-send-transaction>
     </div>
     <div class="col-sm">
-      <app-transaction-list [transactions]="transactions"></app-transaction-list>
+      <app-transaction-list [transactions]="transactions" [wallet]="wallet"></app-transaction-list>
     </div>
   </div>
 </div>

@@ -1,47 +1,64 @@
-<form [formGroup]="sendForm" class="send-transaction">
-  <div class="amount" [ngStyle]="{'background-color': amountSelected ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)'}">
-    <input 
-      class="value form-input"
-      type="number"
-      formControlName="transactionValue"
-      placeholder="0.00">
-    <div class="unit-badge">AKA</div>
-  </div>
-  <div class="transaction-field from">
-    <div class="left-column">From</div>
-    <div class="right-column">
-      <input
-        type="text"
-        class="form-input"
-        formControlName="transactionFrom"
-        placeholder="0xa97c13374fb513375133743F13379CD7413379A16">
+<ng-container *ngIf="sendForm">
+  <form [formGroup]="sendForm" class="send-transaction">
+    <div class="amount" [ngStyle]="{'background-color': amountSelected ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)'}">
+      <input 
+        class="value form-input"
+        type="number"
+        formControlName="value"
+        placeholder="0.00">
+      <div class="unit-badge">AKA</div>
     </div>
-  </div>
-  <div class="transaction-field to">
-    <div class="left-column">To</div>
-    <div class="right-column">
-      <input
-        type="text"
-        class="form-input"
-        formControlName="transactionTo"
-        placeholder="0xa97c13374fb513375133743F13379CD7413379A16">
+    <div class="transaction-field from">
+      <div class="left-column">From</div>
+      <div class="right-column">
+        {{ wallet.address }}
+      </div>
     </div>
-  </div>
-  <div class="transaction-field data">
-    <div class="left-column">Data</div>
-    <div class="right-column">{{ transaction.input }}</div>
-  </div>
-  <div class="transaction-field gas-limit">
-    <div class="left-column">Gas Limit</div>
-    <div class="right-column">{{ transaction.gas }}</div>
-  </div>
-  <div class="transaction-field gas-price">
-    <div class="left-column">Gas Price</div>
-    <div class="right-column">{{ transaction.gasPrice }}</div>
-  </div>
-  <div class="transaction-field network-fee">
-    <div class="left-column">Network Fee</div>
-    <div class="right-column">0.0</div>
-    <!-- <div class="right-column">{{ transaction.networkFee }}</div> -->
-  </div>
-</form>
+    <div class="transaction-field to">
+      <div class="left-column">To</div>
+      <div class="right-column">
+        <input
+          type="text"
+          class="form-input"
+          formControlName="to"
+          placeholder="0xa97c13374fb513375133743F13379CD7413379A16">
+      </div>
+    </div>
+    <div class="transaction-field data">
+      <div class="left-column">Data</div>
+      <div class="right-column">
+        <input
+          type="text"
+          class="form-input"
+          formControlName="data"
+          placeholder="0x982f33f1fbda359d198ea5a310993bb5a328fa830aBCdfA562b9022e">
+      </div>
+    </div>
+    <div class="transaction-field gas-limit">
+      <div class="left-column">Gas Limit</div>
+      <div class="right-column">21000</div>
+    </div>
+    <div class="transaction-field gas-price">
+      <div class="left-column">Gas Price</div>
+      <div class="right-column">41 Gwei</div>
+    </div>
+    <div class="transaction-field network-fee">
+      <div class="left-column">Network Fee</div>
+      <div class="right-column">0.0</div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-template #sendTransactionPassphrase>
+  <ng-container *ngIf="!modalRef.content">
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group col">
+          <label for="passphrase">Wallet Passphrase</label>
+          <input type="password" id="passphrase" class="form-control" [(ngModel)]="passphrase" (onEnter)="sendTransaction()">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="sendTransaction()">Send</button>
+    </div>
+  </ng-container>
+</ng-template>

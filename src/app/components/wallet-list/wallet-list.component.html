@@ -4,7 +4,8 @@
     <div class="col">
       <div class="wallet-values-actions">
         <div class="total-wallets-value">
-          {{ allWalletsBalance || '0 AKA' }}
+          {{ (allWalletsBalance || '0') | showEther }} AKA
+          <img *ngIf="allWalletsBalanceLoading" src="./assets/images/akroma-loading.png" alt="loading wallets balance"/>
         </div>
       </div>
     </div>
@@ -60,7 +61,7 @@
               </div></a>
             </div>
             <div class="wallet-right-control">
-              <button id="wallet-context" [popover]="deleteWalletContextButton" [popoverContext]="{ wallet: wallet }" placement="left" [outsideClick]="true">
+              <button id="wallet-context" [popover]="walletContextButton" [popoverContext]="{ wallet: wallet }" placement="left" [outsideClick]="true">
                 <div class="wallet-ellipsis">
                   <div class="wallet-ellipsis-icon">
                     <img src="./assets/images/icons/icon-ellipsis.svg" alt="options">
@@ -110,10 +111,21 @@
   </ng-template>
 
 <!-- template for delete wallet context menu button -->
-<ng-template #deleteWalletContextButton let-wallet="wallet">
-  <a (click)="backupWalletReminder(wallet, deleteWalletConfirmModal)" style="text-decoration: none;">
-    Delete
-  </a>
+<ng-template #walletContextButton let-wallet="wallet">
+  <div class="row">
+    <div class="col">
+      <a (click)="backupWalletReminder(wallet, deleteWalletConfirmModal)" style="text-decoration: none; cursor: pointer;">
+        Delete
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a (click)="copyAddress(wallet)" style="text-decoration: none; cursor: pointer;">
+        Copy Address
+      </a>
+    </div>
+  </div>
 </ng-template>
 
 <!-- delete wallet confirm modal -->
