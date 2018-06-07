@@ -1,6 +1,6 @@
 import {
   Component, Input, OnInit, ChangeDetectionStrategy, OnChanges,
-  SimpleChanges, TemplateRef, ViewChild, ChangeDetectorRef, Output, EventEmitter
+  SimpleChanges, TemplateRef, ViewChild, ChangeDetectorRef, Output, EventEmitter, HostListener
 } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 
@@ -9,6 +9,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 import { Wallet } from '../../models/wallet';
 import { Web3Service } from '../../providers/web3.service';
+
+import { Router } from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,11 +27,19 @@ export class SendTransactionComponent implements OnChanges {
   @Input() wallet: Wallet;
   @Output() transactionSent: EventEmitter<any>;
   widthExp: number;
-
+  public Esc_Key: string;
+  @HostListener('document:keydown.escape', ['$event'])
+  escapeFromSettingsPage(event: KeyboardEvent) {
+    this.Esc_Key = event.key;
+    console.log(event.key, 'key pressed, closing wallet, back to wallets page');
+    this.router.navigate(['/wallets']);
+  }
   constructor(private cd: ChangeDetectorRef,
               private fb: FormBuilder,
               private modalService: BsModalService,
-              private web3: Web3Service) {
+              private web3: Web3Service,
+              private router: Router
+            ) {
     this.widthExp = 100;
     this.amountSelected = false;
     this.transactionSent = new EventEmitter<any>();
