@@ -21,3 +21,10 @@ div, p, img, a .unselectable {
   -ms-user-select: none;
   user-select: none;
 }
+
+.selectableText {
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
