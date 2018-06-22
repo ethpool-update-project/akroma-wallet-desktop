@@ -80,6 +80,7 @@ export class WalletListComponent implements OnInit {
   }
 
   async createWallet(walletForm: FormGroup = this.walletForm) {
+    this.modalRef.hide();
     const newWalletAddress = await this.web3.eth.personal.newAccount(walletForm.get('passphrase').value);
     const newWalletObject: Wallet = {
       _id: newWalletAddress,
@@ -88,7 +89,6 @@ export class WalletListComponent implements OnInit {
     };
     this.walletService.db.put(newWalletObject);
     this.wallets.push(await this.walletService.db.get(newWalletObject._id));
-    this.modalRef.hide();
     this.walletForm.reset();
   }
 
