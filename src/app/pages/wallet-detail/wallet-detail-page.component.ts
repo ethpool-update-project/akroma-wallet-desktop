@@ -2,28 +2,28 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Transaction } from '../../models/transaction';
-
 import { Wallet } from '../../models/wallet';
 import { TransactionsService } from '../../providers/transactions.service';
 import { TransactionsPersistenceService } from '../../providers/transactions-persistence.service';
-import { ElectronService } from '../../providers/electron.service';
 import { clientConstants } from '../../providers/akroma-client.constants';
 import { AkromaLoggerService } from '../../providers/akroma-logger.service';
 
 @Component({
   selector: 'app-wallet-detail-page',
   templateUrl: './wallet-detail-page.component.html',
-  styleUrls: ['./wallet-detail-page.component.scss']
+  styleUrls: ['./wallet-detail-page.component.scss'],
 })
 export class WalletDetailPageComponent implements OnDestroy, OnInit {
   destroyed: boolean;
+  endBlockNumber: number;
+  lastBlockNumberSynced: number;
   transactions: Transaction[];
+  transactionSyncInterval: any;
   pendingTransactions: Transaction[];
   syncing: boolean;
   wallet: Wallet;
 
   constructor(private logger: AkromaLoggerService,
-              private electronService: ElectronService,
               private transactionsService: TransactionsService,
               private transactionsPersistenceService: TransactionsPersistenceService,
               private route: ActivatedRoute) {
@@ -40,16 +40,16 @@ export class WalletDetailPageComponent implements OnDestroy, OnInit {
       balance: this.transactionsService.utils.fromWei(walletBalance, 'ether'),
     };
     await this.refreshTransactions();
-    let lastBlockSynced = this.getLastBlockSynced();
-    this.startSyncBlocks(lastBlockSynced);
+    this.lastBlockNumberSynced = this.getLastBlockSynced();
+    this.syncTransactions(this.lastBlockNumberSynced);
 
-    setInterval(async () => {
+    this.transactionSyncInterval = setInterval(async () => {
       if (this.syncing) {
         return;
       }
       await this.refreshTransactions();
-      lastBlockSynced = this.getLastBlockSynced();
-      this.startSyncBlocks(lastBlockSynced);
+      this.lastBlockNumberSynced = this.getLastBlockSynced();
+      this.syncTransactions(this.lastBlockNumberSynced);
     }, 30000);
   }
 
@@ -59,30 +59,37 @@ export class WalletDetailPageComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.destroyed = true;
+    clearInterval(this.transactionSyncInterval);
   }
 
-  async startSyncBlocks(lastBlockSynced: number) {
-    const currentTxHashes = this.transactions.map(x => x.hash);
-    const endBlockNumber = await this.transactionsService.eth.getBlockNumber();
-    const start = lastBlockSynced || 0;
-    this.logger.debug('Starting Block Sync @ Block' + start);
-    for (let i = start; i < endBlockNumber; i++) {
-      this.syncing = true;
+  async syncTransactions(lastBlockNumberSynced: number) {
+    const currentTxHashes = this.transactions.map(x => x.hash.toUpperCase());
+    this.endBlockNumber = await this.transactionsService.eth.getBlockNumber();
+    const start = lastBlockNumberSynced || 0;
+
+    this.logger.debug('Starting Transaction Sync @ Block' + start);
+
+    for (let i = start; i < this.endBlockNumber; i++) {
       if (this.destroyed) {
-        this.logger.debug('Component is destroyed, I should quit syncing.');
         return;
       }
-      if (i % 10 === 0) {
-        this.logger.debug('Block Sync @ Block #' + i);
-        const transactions = await this.transactionsService.getTransactionsByAccount(this.wallet.address, i, i + 10);
+      this.syncing = true;
+      this.lastBlockNumberSynced = i;
+
+      if (i % 1000 === 0 || this.pendingTransactions.length > 0) {
+        this.logger.debug('Transaction Sync @ Block #' + i);
+        const transactions = await this.transactionsService.getTransactionsByAccount(this.wallet.address, i - 10, i + 1000);
         if (transactions.length > 0) {
-          const transactionsToInsert = transactions.filter(x => !currentTxHashes.includes(x.hash));
+          const transactionsToInsert = transactions.filter(x => !currentTxHashes.includes(x.hash.toUpperCase()));
           this.logger.debug(`Transactions Found: ${transactionsToInsert}`);
           if (this.pendingTransactions.length > 0) {
             await this.replacePendingTransactionWithConfirmed(transactions);
           }
-          await this.transactionsPersistenceService.db.bulkDocs(transactions);
+          await this.transactionsPersistenceService.db.bulkDocs(
+            transactions.filter(x => !this.pendingTransactions.map(y => y.hash).includes(x.hash)));
         }
+      }
+      if (i % 100) {
         localStorage.setItem(`lastBlock_${this.wallet.address}`, i.toString());
       }
     }
@@ -96,38 +103,30 @@ export class WalletDetailPageComponent implements OnDestroy, OnInit {
   }
 
   async onTransactionSent(tx: Transaction) {
-    const result = await this.transactionsPersistenceService.pending.put({
-      hash: tx.hash,
-      nonce: 0,
-      blockHash: '',
-      blockNumber: 0,
-      transactionIndex: 0,
-      from: tx.from,
-      to: tx.to,
-      value: tx.value,
-      gasPrice: '',
-      gas: 2100,
-      input: '',
-      timestamp: new Date().getTime(),
-      _id: tx.hash,
-    });
     await this.refreshTransactions();
   }
 
-  async replacePendingTransactionWithConfirmed(transactionsToInsert: Transaction[]) {
-    transactionsToInsert.forEach(async newTx => {
-      const foundTx = await this.transactionsPersistenceService.pending.get(newTx.hash);
-      try {
-        if (!!foundTx) {
-          const result = await this.transactionsPersistenceService.db.put({
+  replacePendingTransactionWithConfirmed(transactionsToInsert: Transaction[]) {
+    transactionsToInsert.forEach(newTx => {
+      this.transactionsPersistenceService.pending.get(newTx.hash).then(pendingTx => {
+        if (pendingTx) {
+          return this.transactionsPersistenceService.db.put({
             ...newTx,
             _id: newTx.hash,
+          }).then(putResult => {
+            if (putResult.ok) {
+              return this.transactionsPersistenceService.pending.put({ ...pendingTx, _deleted: true }).then(() => {
+              }).catch(err => {
+                this.logger.error('Trouble removing pending transaction' + err);
+              });
+            }
+          }).catch(err => {
+            this.logger.error('Trouble inserting transaction' + err);
           });
         }
-      } catch {
-        await this.transactionsPersistenceService.pending.remove(foundTx);
-      }
-      this.logger.error(`Trouble inserting transaction ${newTx.hash}`);
+      }).catch(() => {
+          this.logger.error('Pending tx not found by hash ' + newTx.hash);
+        });
     });
   }
 

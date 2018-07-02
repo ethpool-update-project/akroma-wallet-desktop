@@ -1,29 +1,32 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { Transaction } from '../../models/transaction';
 import { Wallet } from '../../models/wallet';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-transaction-list',
   templateUrl: './transaction-list.component.html',
-  styleUrls: ['./transaction-list.component.scss']
+  styleUrls: ['./transaction-list.component.scss'],
 })
 export class TransactionListComponent implements OnChanges, OnInit {
-  filteredTransactions: Transaction[];
+  @Input() lastBlockNumberSynced: number;
+  @Input() endBlockNumber: number;
   @Input() transactions: Transaction[];
   @Input() wallet: Wallet;
 
-  timestamp: string = new Date().toLocaleDateString();
-  p: number;
+  filteredTransactions: Transaction[];
   filter: string;
+  timestamp: string = new Date().toLocaleDateString();
+  page: number;
 
   constructor() {
-    this.p = 1;
+    this.page = 1;
     this.filter = 'all';
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!!changes.transactions && !!changes.transactions.currentValue) {
+    if (!!changes.transactions && changes.transactions.currentValue !== changes.transactions.previousValue) {
       this.filteredTransactions = [ ...this.transactions ];
       this.filteredTransactions.sort((a: Transaction, b: Transaction) => b.timestamp - a.timestamp);
     }
@@ -38,19 +41,17 @@ export class TransactionListComponent implements OnChanges, OnInit {
         this.filter = filterType;
         this.filteredTransactions = [ ...this.transactions ]
           .filter(x => x.from.toUpperCase() === this.wallet.address.toUpperCase());
-        this.filteredTransactions.sort((a: Transaction, b: Transaction) => b.timestamp - a.timestamp);
         break;
       case 'received':
         this.filter = filterType;
         this.filteredTransactions = [ ...this.transactions ]
           .filter(x => x.to.toUpperCase() === this.wallet.address.toUpperCase());
-        this.filteredTransactions.sort((a: Transaction, b: Transaction) => b.timestamp - a.timestamp);
         break;
       default:
         this.filter = 'all';
         this.filteredTransactions = [ ...this.transactions ];
-        this.filteredTransactions.sort((a: Transaction, b: Transaction) => b.timestamp - a.timestamp);
     }
+    this.filteredTransactions = [ ...this.filteredTransactions ].sort((a: Transaction, b: Transaction) => b.timestamp - a.timestamp);
   }
 
 }

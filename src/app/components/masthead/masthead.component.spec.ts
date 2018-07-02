@@ -8,7 +8,7 @@ describe('MastheadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MastheadComponent ]
+      declarations: [ MastheadComponent ],
     })
     .compileComponents();
   }));

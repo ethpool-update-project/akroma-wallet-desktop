@@ -8,15 +8,15 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
       ],
       providers: [
-        ElectronService
+        ElectronService,
       ],
       imports: [
         RouterTestingModule,
-        TranslateModule.forRoot()
-      ]
+        TranslateModule.forRoot(),
+      ],
     }).compileComponents();
   }));
 
@@ -27,6 +27,7 @@ describe('AppComponent', () => {
   }));
 });
 
+// tslint:disable-next-line
 class TranslateServiceStub {
   setDefaultLang(lang: string): void {
   }

@@ -19,6 +19,10 @@ export class TransactionsService extends Web3Service {
       startBlockNumber = endBlockNumber - 1000;
     }
 
+    if (startBlockNumber < 0) {
+      startBlockNumber = 0;
+    }
+
     for (let i = startBlockNumber; i <= endBlockNumber; i++) {
       const block = await this.eth.getBlock(i, true);
       if (block != null && block.transactions != null) {

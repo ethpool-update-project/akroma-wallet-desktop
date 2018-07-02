@@ -1,16 +1,17 @@
 import {
-  Component, Input, OnInit, ChangeDetectionStrategy, OnChanges,
-  SimpleChanges, TemplateRef, ViewChild, ChangeDetectorRef, Output, EventEmitter, HostListener
+  Component, Input, ChangeDetectionStrategy, OnChanges,
+  SimpleChanges, TemplateRef, ViewChild, ChangeDetectorRef, Output, EventEmitter, HostListener,
 } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+
+import { Observable } from 'rxjs/Observable';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 import { Wallet } from '../../models/wallet';
 import { Web3Service } from '../../providers/web3.service';
-
-import { Router } from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,35 +23,35 @@ export class SendTransactionComponent implements OnChanges {
   amountSelected: boolean;
   sendForm: FormGroup;
   modalRef: BsModalRef;
+  gasPrice$: Observable<number>;
   passphrase: string;
   @ViewChild('sendTransactionPassphrase') passphraseModal: TemplateRef<any>;
   @Input() wallet: Wallet;
   @Output() transactionSent: EventEmitter<any>;
-  widthExp: number;
-  public Esc_Key: string;
+  public escapeKey;
   @HostListener('document:keydown.escape', ['$event'])
   escapeFromSettingsPage(event: KeyboardEvent) {
-    this.Esc_Key = event.key;
-    console.log(event.key, 'key pressed, closing wallet, back to wallets page');
+    this.escapeKey = event.key;
     this.router.navigate(['/wallets']);
   }
   constructor(private cd: ChangeDetectorRef,
               private fb: FormBuilder,
               private modalService: BsModalService,
               private web3: Web3Service,
-              private router: Router
+              private router: Router,
             ) {
-    this.widthExp = 100;
-    this.amountSelected = false;
     this.transactionSent = new EventEmitter<any>();
+    this.gasPrice$ = Observable.fromPromise(this.web3.eth.getGasPrice());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.web3);
     if (changes.wallet.isFirstChange()) {
       return;
     }
-    this.buildStockForm();
+
+    if (!!changes.wallet && !!changes.wallet.currentValue && changes.wallet.previousValue === undefined) {
+      this.buildStockForm();
+    }
   }
 
   buildStockForm() {

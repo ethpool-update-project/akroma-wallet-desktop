@@ -21,7 +21,7 @@
 
 .transactions {
     margin: 14px;
-    overflow-y: scroll;
+    overflow: hidden;
     color: #fff;
 }
 
@@ -96,4 +96,20 @@
     margin-right: auto;
     opacity: 0.9;
     width: 240px;
+}
+
+div.bar-background {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+div.bar-white {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+div.syncing-bar {
+    height: 0.5em;
+    border-radius: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
 }

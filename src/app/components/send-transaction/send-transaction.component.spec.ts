@@ -8,7 +8,7 @@ describe('SendTransactionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SendTransactionComponent ]
+      declarations: [ SendTransactionComponent ],
     })
     .compileComponents();
   }));

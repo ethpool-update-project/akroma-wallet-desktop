@@ -8,7 +8,7 @@ describe('SplashComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SplashComponent ]
+      declarations: [ SplashComponent ],
     })
     .compileComponents();
   }));

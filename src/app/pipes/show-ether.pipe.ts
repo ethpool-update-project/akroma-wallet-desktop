@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Web3Service } from '../providers/web3.service';
 
 @Pipe({
-  name: 'showEther'
+  name: 'showEther',
 })
 export class ShowEtherPipe implements PipeTransform {
 

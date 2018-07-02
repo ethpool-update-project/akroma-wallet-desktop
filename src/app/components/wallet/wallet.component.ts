@@ -6,7 +6,7 @@ import { Wallet } from '../../models/wallet';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-wallet',
   templateUrl: './wallet.component.html',
-  styleUrls: ['./wallet.component.scss']
+  styleUrls: ['./wallet.component.scss'],
 })
 export class WalletComponent implements OnInit {
   @Input() wallet: Wallet;

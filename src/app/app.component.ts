@@ -8,12 +8,13 @@ import { ElectronService } from './providers/electron.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   constructor(
     private logger: AkromaLoggerService,
     public electronService: ElectronService,
+    // tslint:disable-next-line
     private translate: TranslateService,
     private akromaClientService: AkromaClientService) {
 
@@ -36,7 +37,7 @@ export class AppComponent {
             this.akromaClientService.startClient();
           }
         });
-      })
+      }),
       );
     } else {
       console.log('Mode web');
