@@ -168,7 +168,7 @@ export class WalletListComponent implements OnInit {
       this.modalRef.hide();
      
       this.electronService.fs.createReadStream(`${keystoreFileDir}/${keystoreFile}`).pipe(this.electronService.fs.createWriteStream(`${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets/${keystoreFile}`));
-      console.log(`${keystoreFileDir}/${keystoreFile} was coppyed to ${systemSettings.clientPath}/AKA_Deleted_wallets`);
+      console.log(`${keystoreFileDir}/${keystoreFile} was coppyed to ${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets`);
    
       await this.electronService.fs.unlinkSync(`${keystoreFileDir}/${keystoreFile}`);
       try {
