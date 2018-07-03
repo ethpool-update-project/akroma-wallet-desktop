@@ -159,8 +159,17 @@ export class WalletListComponent implements OnInit {
     const keystoreFileDir = `${systemSettings.clientPath}/data/keystore`;
     const keystoreFileList = this.electronService.fs.readdirSync(keystoreFileDir);
     const keystoreFile = keystoreFileList.find(x => x.toLowerCase().includes(wallet.address.replace('0x', '').toLowerCase()));
+    const backupDir = `${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets`;
+
+    if (!this.electronService.fs.existsSync(backupDir)){
+        this.electronService.fs.mkdirSync(backupDir);
+    }
     if (keystoreFile) {
       this.modalRef.hide();
+     
+      this.electronService.fs.createReadStream(`${keystoreFileDir}/${keystoreFile}`).pipe(this.electronService.fs.createWriteStream(`${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets/${keystoreFile}`));
+      console.log(`${keystoreFileDir}/${keystoreFile} was coppyed to ${systemSettings.clientPath}/AKA_Deleted_wallets`);
+   
       await this.electronService.fs.unlinkSync(`${keystoreFileDir}/${keystoreFile}`);
       try {
         const result = await this.walletService.db.remove(wallet._id, wallet._rev);
