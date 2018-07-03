@@ -36,12 +36,12 @@ export class WalletListComponent implements OnInit {
   wallets: Wallet[];
 
   constructor(private formBuilder: FormBuilder,
-              private modalService: BsModalService,
-              private web3: Web3Service,
-              private walletService: WalletPersistenceService,
-              private settingsService: SettingsPersistenceService,
-              private electronService: ElectronService,
-              private logger: AkromaLoggerService) {
+    private modalService: BsModalService,
+    private web3: Web3Service,
+    private walletService: WalletPersistenceService,
+    private settingsService: SettingsPersistenceService,
+    private electronService: ElectronService,
+    private logger: AkromaLoggerService) {
     this.web3.setProvider(new this.web3.providers.HttpProvider(clientConstants.connection.default));
     this.walletForm = this.formBuilder.group(
       { name: '', passphrase: '', confirmPassphrase: '' },
@@ -92,7 +92,7 @@ export class WalletListComponent implements OnInit {
   }
 
   private mapDocumentsToRestoreWallets(walletData: any[]): Wallet[] {
-    return walletData.map(x => <Wallet> {
+    return walletData.map(x => <Wallet>{
       name: x.id,
       address: x.id,
       _id: x.id,
@@ -124,7 +124,7 @@ export class WalletListComponent implements OnInit {
 
   passphraseMatchValidator(g: FormGroup): { [key: string]: boolean } {
     return g.get('passphrase').value === g.get('confirmPassphrase').value
-    ? null : { passphraseMatch: true };
+      ? null : { passphraseMatch: true };
   }
 
   async createWallet(walletForm: FormGroup = this.walletForm): Promise<void> {
@@ -161,15 +161,16 @@ export class WalletListComponent implements OnInit {
     const keystoreFile = keystoreFileList.find(x => x.toLowerCase().includes(wallet.address.replace('0x', '').toLowerCase()));
     const backupDir = `${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets`;
 
-    if (!this.electronService.fs.existsSync(backupDir)){
-        this.electronService.fs.mkdirSync(backupDir);
+    if (!this.electronService.fs.existsSync(backupDir)) {
+      this.electronService.fs.mkdirSync(backupDir);
     }
     if (keystoreFile) {
       this.modalRef.hide();
-     
-      this.electronService.fs.createReadStream(`${keystoreFileDir}/${keystoreFile}`).pipe(this.electronService.fs.createWriteStream(`${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets/${keystoreFile}`));
-      console.log(`${keystoreFileDir}/${keystoreFile} was coppyed to ${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets`);
-   
+
+      this.electronService.fs.createReadStream(`${keystoreFileDir}/${keystoreFile}`)
+      .pipe(this.electronService.fs.createWriteStream(`${systemSettings.clientPath}/Auto-Backup-of-Deleted-Wallets/${keystoreFile}`));
+      console.log(`${keystoreFileDir}/${keystoreFile} was coppyed to ${backupDir}`);
+
       await this.electronService.fs.unlinkSync(`${keystoreFileDir}/${keystoreFile}`);
       try {
         const result = await this.walletService.db.remove(wallet._id, wallet._rev);
