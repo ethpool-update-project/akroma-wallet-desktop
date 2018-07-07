@@ -217,3 +217,20 @@
     justify-content: center;
     align-items: center;
 }
+
+.qr-wallet-name {
+    top: 1em;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    margin-left: -1em;
+}
+
+
+.qr-wallet-address{
+    bottom: 1em;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    margin-left: -1em;
+}
