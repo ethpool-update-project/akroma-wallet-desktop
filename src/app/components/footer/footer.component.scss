@@ -1,8 +1,7 @@
-
 .footer {
     background-color: rgba(0, 0, 0, 0.2);
     color:white;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     padding-top:10px;
     padding-bottom:10px;
@@ -11,4 +10,4 @@
     .list-inline {
         margin-bottom: 0px;
     }
-  }
+}

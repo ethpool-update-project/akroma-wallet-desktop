@@ -5,7 +5,7 @@ import { Web3Service } from './web3.service';
 describe('Web3Service', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [Web3Service]
+      providers: [Web3Service],
     });
   });
 

@@ -5,7 +5,7 @@ import { WalletPersistenceService } from './wallet-persistence.service';
 describe('WalletPersistenceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [WalletPersistenceService]
+      providers: [WalletPersistenceService],
     });
   });
 

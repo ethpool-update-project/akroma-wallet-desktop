@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { SystemSettings } from '../models/system-settings';
 import { ElectronService } from './electron.service';
 import { SettingsPersistenceService } from './settings-persistence.service';
-import { AkromaClientService } from './akroma-client.service';
 
 @Injectable()
 export class AkromaLoggerService {

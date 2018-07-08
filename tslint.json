@@ -16,11 +16,6 @@
     },
     "eofline": true,
     "forin": true,
-    "import-blacklist": [
-      true,
-      "rxjs",
-      "rxjs/Rx"
-    ],
     "import-spacing": true,
     "indent": [
       true,
@@ -30,7 +25,7 @@
     "label-position": true,
     "max-line-length": [
       true,
-      140
+      240
     ],
     "member-access": false,
     "member-ordering": [
@@ -73,6 +68,7 @@
     "no-trailing-whitespace": true,
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
+    "no-unused-variable": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
@@ -92,6 +88,13 @@
     "semicolon": [
       true,
       "always"
+    ],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "always",
+        "singleline": "never"
+      }
     ],
     "triple-equals": [
       true,
@@ -116,6 +119,11 @@
       "check-operator",
       "check-separator",
       "check-type"
+    ],
+    "angular-whitespace": [
+      true,
+      "check-interpolation",
+      "check-semicolon"
     ],
     "directive-selector": [
       true,

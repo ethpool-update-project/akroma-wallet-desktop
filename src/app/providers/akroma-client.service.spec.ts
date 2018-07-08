@@ -5,7 +5,7 @@ import { AkromaClientService } from './akroma-client.service';
 describe('AkromaClientService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AkromaClientService]
+      providers: [AkromaClientService],
     });
   });
 

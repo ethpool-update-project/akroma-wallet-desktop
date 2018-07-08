@@ -5,7 +5,7 @@ import { TransactionsPersistenceService } from './transactions-persistence.servi
 describe('TransactionsPersistenceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TransactionsPersistenceService]
+      providers: [TransactionsPersistenceService],
     });
   });
 

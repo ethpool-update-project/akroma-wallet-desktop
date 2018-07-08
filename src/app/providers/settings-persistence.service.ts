@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import PouchDB from 'pouchdb';
 
 import { SystemSettings } from '../models/system-settings';
-import { AkromaLoggerService } from './akroma-logger.service';
 import { ElectronService } from './electron.service';
 import { clientConstants } from './akroma-client.constants';
 
