@@ -136,10 +136,6 @@ export class AkromaClientService {
     return true;
   }
 
-  private archiveVerifiedMd5Checksum(fileBuffer: Buffer): boolean {
-    return this.es.crypto.createHash('md5').update(fileBuffer).digest('hex') === this.client.download.md5;
-  }
-
   private akromaClientExists(): boolean {
     return this.es.fs.existsSync(this.clientPath + this.es.path.sep + this.clientBin);
   }

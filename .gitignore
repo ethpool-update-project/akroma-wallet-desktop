@@ -4,3 +4,4 @@ dist/
 main.js
 app-builds/
 .DS_Store
+npm-debug.log

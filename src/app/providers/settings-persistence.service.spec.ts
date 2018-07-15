@@ -5,7 +5,7 @@ import { SettingsPersistenceService } from './settings-persistence.service';
 describe('SettingsPersistenceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SettingsPersistenceService]
+      providers: [SettingsPersistenceService],
     });
   });
 

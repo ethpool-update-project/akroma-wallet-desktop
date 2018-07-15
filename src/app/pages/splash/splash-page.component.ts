@@ -25,18 +25,17 @@ export function getProgressbarConfig(): ProgressbarConfig {
   selector: 'app-splash-page',
   templateUrl: './splash-page.component.html',
   styleUrls: ['./splash-page.component.scss'],
-  providers: [{ provide: ProgressbarConfig, useFactory: getProgressbarConfig }]
+  providers: [{ provide: ProgressbarConfig, useFactory: getProgressbarConfig }],
 })
 export class SplashComponent implements OnDestroy, OnInit {
   clientStatus: string;
   lastPercentageSynced: number;
   isSyncing: boolean | BlockSync;
   isListening: boolean;
+  lastSynced: BlockSync;
   peerCount: number;
+  syncingOperationIntervals: NodeJS.Timer[];
   clientStatusSubscription: ISubscription;
-  isListeningSubscription: ISubscription;
-  isSyncingSubscription: ISubscription;
-  peerCountSubscription: ISubscription;
   private blockSyncStore: PouchDB.Database<BlockSync>;
 
   constructor(private web3: Web3Service,
@@ -46,6 +45,9 @@ export class SplashComponent implements OnDestroy, OnInit {
     this.lastPercentageSynced = 0;
     this.clientStatus = '';
     this.blockSyncStore = new PouchDB('lastBlockSynced');
+    this.syncingOperationIntervals = [];
+    this.isListening = false;
+    this.isSyncing = false;
   }
 
   ngOnInit() {
@@ -65,13 +67,10 @@ export class SplashComponent implements OnDestroy, OnInit {
   }
 
   private async startSyncingSubscriptions(): Promise<void> {
-    let lastSynced: BlockSync;
     try {
-      console.log('Start Syncing - Get lastSynced');
-      lastSynced = await this.blockSyncStore.get('lastSynced');
+      this.lastSynced = await this.blockSyncStore.get('lastSynced');
+      this.calculateSyncState(this.lastSynced);
     } catch {
-      console.log('Start Syncing - FAIL Get lastSynced');
-      console.log('Start Syncing - Put lastSynced');
       const results = await this.blockSyncStore.put({
         _id: 'lastSynced',
         currentBlock: 0,
@@ -81,62 +80,49 @@ export class SplashComponent implements OnDestroy, OnInit {
         startingBlock: 0,
       });
       if (results.ok) {
-        console.log('Start Syncing - Get lastSynced');
-        lastSynced = await this.blockSyncStore.get('lastSynced');
+        this.lastSynced = await this.blockSyncStore.get('lastSynced');
+        this.calculateSyncState(this.lastSynced);
       }
     }
-    this.isListeningSubscription = IntervalObservable.create(2000)
-    .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.net.isListening())))
-    .pipe(retry(10))
-    .subscribe((result: boolean) => {
-      console.log('is listening:' + result);
-      this.isListening = result;
-    });
 
-    this.isSyncingSubscription = IntervalObservable.create(1000)
-    .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.isSyncing())))
-    .pipe(retry(10))
-    .subscribe(async (result: boolean | BlockSync) => {
-      console.log('is syncing:' + JSON.stringify(result));
-      if (this.isListening) {
-        this.isSyncing = result;
-        if (!!result) {
-          lastSynced = {
-            ...lastSynced,
-            ...<BlockSync> result,
-          };
-          console.log('currentBlock:' + lastSynced.currentBlock + ' highestBlock:' + lastSynced.highestBlock);
+    this.syncingOperationIntervals.push(
+      setInterval(async () => {
+        this.isListening = await this.web3.eth.net.isListening();
+      }, 1000),
+      setInterval(async () => {
+        let blockNumber;
+        if (this.isListening) {
+          this.isSyncing = await this.web3.eth.isSyncing();
+          blockNumber = await this.web3.eth.getBlockNumber();
         }
-        if (!!lastSynced) {
-          await this.blockSyncStore.put({
-            ...lastSynced,
-          });
-          lastSynced = await this.blockSyncStore.get('lastSynced');
-
-          console.log('currentBlock:' + lastSynced.currentBlock + ' highestBlock:' + lastSynced.highestBlock);
-          this.lastPercentageSynced = this.currentPercentage(lastSynced.currentBlock, lastSynced.highestBlock);
-        }
-        console.log(result);
-        console.log(this.lastPercentageSynced);
-        console.log((this.lastPercentageSynced || 0).toFixed(0));
-        if (result === false && this.lastPercentageSynced >= 98) {
-          // Nav away here
-          console.log('nav away...');
-          // If user has not set up a wallet yet, send them to create / import wallet
-          // ...else send them to their last used wallet?
+        if (this.lastPercentageSynced >= 98 || (this.peerCount >= 3 && !this.isSyncing && blockNumber !== 0)) {
           this.router.navigate(['/wallets']);
         }
-      }
-    });
+      }, 1000),
+      setInterval(async () => {
+        await this.updateLastSynced();
+      }, 5000),
+      setInterval(async () => {
+        if (this.isListening) {
+          this.peerCount = await this.web3.eth.net.getPeerCount();
+        }
+      }, 15000));
+  }
 
-    this.peerCountSubscription = IntervalObservable.create(15000)
-    .pipe(mergeMap((i) => Observable.fromPromise(this.web3.eth.net.getPeerCount())))
-    .pipe(retry(10))
-    .subscribe((result: number) => {
-      if (this.isListening) {
-        this.peerCount = result;
-      }
+  async updateLastSynced(): Promise<void> {
+    await this.blockSyncStore.put({
+      ...this.lastSynced,
     });
+    this.lastSynced = await this.blockSyncStore.get('lastSynced');
+  }
+
+  calculateSyncState(blockSync: BlockSync) {
+    this.lastSynced = {
+      ...this.lastSynced,
+      ...blockSync,
+    };
+    this.lastPercentageSynced = this.currentPercentage(this.lastSynced.currentBlock, this.lastSynced.highestBlock);
+    return this.lastPercentageSynced;
   }
 
   currentPercentage(currentBlock: number, highestBlock: number): number {
@@ -148,8 +134,6 @@ export class SplashComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.isListeningSubscription.unsubscribe();
-    this.isSyncingSubscription.unsubscribe();
-    this.peerCountSubscription.unsubscribe();
+    this.syncingOperationIntervals.forEach(timer => clearInterval(timer));
   }
 }

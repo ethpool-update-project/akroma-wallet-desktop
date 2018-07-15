@@ -10,6 +10,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { PopoverModule, ProgressbarModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 import 'reflect-metadata';
 import 'zone.js/dist/zone-mix';
 import '../polyfills';
@@ -36,6 +37,7 @@ import { TransactionsService } from './providers/transactions.service';
 import { WalletPersistenceService } from './providers/wallet-persistence.service';
 import { Web3Service } from './providers/web3.service';
 import { AkromaLoggerService } from './providers/akroma-logger.service';
+import { ShowEtherPipe } from './pipes/show-ether.pipe';
 
 
 // AoT requires an exported function for factories
@@ -57,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WalletListComponent,
     MastheadComponent,
     FooterComponent,
+    ShowEtherPipe,
   ],
   imports: [
     RouterModule,
@@ -71,12 +74,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: (HttpLoaderFactory),
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     ProgressbarModule.forRoot(),
     ModalModule.forRoot(),
-    PopoverModule.forRoot()
+    PopoverModule.forRoot(),
+    NgxQRCodeModule,
   ],
   providers: [
     AkromaClientService,
@@ -88,6 +92,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingsPersistenceService,
     WalletPersistenceService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

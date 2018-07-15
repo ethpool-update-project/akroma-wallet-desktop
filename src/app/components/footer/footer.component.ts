@@ -5,13 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import { SystemSettings } from '../../models/system-settings';
 import { ElectronService } from '../../providers/electron.service';
 import { SettingsPersistenceService } from '../../providers/settings-persistence.service';
-import { AkromaClientService } from '../../providers/akroma-client.service';
 import { Web3Service } from '../../providers/web3.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
   blockNumber$: Observable<number>;
@@ -20,10 +19,9 @@ export class FooterComponent implements OnInit {
   private settings: SystemSettings;
 
   constructor(
-    private clientService: AkromaClientService,
     private web3: Web3Service,
     private electronService: ElectronService,
-    private settingsService: SettingsPersistenceService
+    private settingsService: SettingsPersistenceService,
   ) { }
 
   async ngOnInit() {

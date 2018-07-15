@@ -5,25 +5,47 @@
     <a class="filter-type" [ngClass]="{'selected': filter === 'received'}" (click)="setFilter('received')">Received</a>
   </div>
 
-  <div *ngFor="let transaction of transactions | filter:filter | paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
-    class="transactions">
-    <div class="transaction">
-      <div class="value">
-        {{ transaction.value }}
-        <span class="unit-badge">AKA</span>
+  <ng-container *ngIf="lastBlockNumberSynced + 10 >= endBlockNumber; else loading">
+    <div *ngFor="let transaction of filteredTransactions | paginate: { itemsPerPage: 5, currentPage: p }; let i = index" class="transactions">
+      <div class="transaction">
+        <div class="value selectableText">
+          {{ transaction.value | showEther }}
+          <span class="unit-badge">AKA</span>
+          <div *ngIf="transaction.blockHash === ''">Pending</div>
+        </div>
+        <div class="timestamp">
+          {{ transaction.timestamp | date:'long' }}
+        </div>
       </div>
-      <div class="timestamp">
-        {{ this.timestamp }}
+      <div *ngIf="transaction.from.toUpperCase() === wallet.address.toUpperCase(); else fromAddress" class="address">
+        <div class="to">To</div>
+        <div class="toAddress selectableText">{{ transaction.to }}</div>
       </div>
+      <ng-template #fromAddress>
+        <div class="address">
+          <div class="from">From</div>
+          <div class="fromAddress selectableText">{{ transaction.from }}</div>
+        </div>
+      </ng-template>
     </div>
-    <div *ngIf="false" class="address">
-      <div class="to">To</div>
-      <div class="toAddress">{{ transaction.to }}</div>
-    </div>
-    <div *ngIf="true" class="address">
-      <div class="from">From</div>
-      <div class="fromAddress">{{ transaction.from }}</div>
+    <ng-container *ngIf="filteredTransactions?.length > 0">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </ng-container>
+  </ng-container>
+</div>
+
+<!-- loading animation -->
+<ng-template #loading>
+  <div id="loading">
+    <img id="loading-img" src="./assets/images/akroma-loading.png" alt="loading">
+    <p>Transaction Sync in Progress...</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="syncing-bar progress bar-background">
+          <div class="progress-bar bar-white" role="progressbar" [ngStyle]="{'width': (lastBlockNumberSynced / endBlockNumber * 100) + '%'}"
+            [attr.aria-valuenow]="lastBlockNumberSynced / endBlockNumber * 100" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
     </div>
   </div>
-  <pagination-controls (pageChange)="p = $event"></pagination-controls>
-</div>
+</ng-template>

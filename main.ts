@@ -1,4 +1,4 @@
-import { BrowserWindow, app, screen, ipcMain } from 'electron';
+import { BrowserWindow, app, screen, ipcMain, Menu } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { AppConfig } from './src/app/app.config';
@@ -28,7 +28,20 @@ function createWindow() {
     height: 600,
     backgroundColor: '#cb2027',
   });
-  win.setMenu(null);
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    {
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+      ],
+    },
+  ]));
 
   if (serve) {
     require('electron-reload')(__dirname, {

@@ -1,6 +1,6 @@
 {
   "name": "akroma",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Akroma Desktop Wallet",
   "homepage": "https://github.com/akroma-project/akroma-wallet-desktop",
   "author": {
@@ -22,7 +22,7 @@
     "start": "node hooks/environments/set_profile.js && npm-run-all -p ng:serve electron:serve",
     "build": "node hooks/environments/set_profile.js && ng build && npm run electron:tsc",
     "build:prod": "node hooks/environments/set_profile.js && ng build --prod && npm run electron:tsc",
-    "ng:serve": "ng serve -o",
+    "ng:serve": "ng serve",
     "electron:tsc": "tsc main.ts",
     "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
@@ -35,12 +35,13 @@
     "e2e": "npm-run-all -p -r pree2e:build pree2e:protractor"
   },
   "dependencies": {
-    "bignumber.js": "^7.0.1",
+    "bignumber.js": "^7.2.1",
     "crypto-browserify": "^3.12.0",
     "install": "^0.11.0",
     "ng2-search-filter": "^0.4.7",
     "ngx-bootstrap": "^2.0.5",
     "ngx-pagination": "^3.1.1",
+    "ngx-qrcode2": "0.0.9",
     "node-pre-gyp": "^0.10.0",
     "npm": "^6.0.1",
     "pouchdb": "^6.4.3",
@@ -94,7 +95,7 @@
     "rxjs": "5.5.8",
     "ts-node": "4.1.0",
     "tslint": "5.9.1",
-    "typescript": "2.6.2",
+    "typescript": "^2.6.2",
     "wait-on": "2.1.0",
     "webdriver-manager": "12.0.6",
     "zone.js": "0.8.26"
