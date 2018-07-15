@@ -22,10 +22,10 @@ This is the Akroma Desktop wallet.
 
 Currently runs with:
 
-- Angular v5.2.9
-- Angular-CLI v1.7.4
-- Electron v1.8.4
-- Electron Builder v20.8.1
+- Angular v6.0.9
+- Angular-CLI v6.0.8
+- Electron v2.0.5
+- Electron Builder v20.20.4
 
 With this sample, you can :
 
@@ -91,10 +91,7 @@ You can desactivate "Developer Tools" by commenting `win.webContents.openDevTool
 
 **Your application is optimised. Only /dist folder and node dependencies are included in the executable.**
 
-## Browser mode
 
-Maybe you want to execute the application in the browser (WITHOUT HOT RELOAD ACTUALLY...) ? You can do it with `npm run ng:serve`.  
-Note that you can't use Electron or NodeJS native libraries in this case. Please check `providers/electron.service.ts` to watch how conditional import of electron/Native libraries is done.
 
 ## Contributors
 
