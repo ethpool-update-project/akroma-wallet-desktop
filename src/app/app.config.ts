@@ -20,4 +20,4 @@ if (ENV === PROD) {
   conf = CONF_LOCAL;
 }
 
-export const AppConfig = Object.assign({}, conf);
+export const AppConfig = (<any>Object).assign({}, conf);
